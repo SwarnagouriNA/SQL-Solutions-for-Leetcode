@@ -1,0 +1,13 @@
+---------------1. Monthly Transactions I---------------------
+import pandas as pd
+
+def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
+    transactions["month"] = transactions["trans_date"].dt.strftime("%Y-%m")
+    transactions["approved"] = np.where(transactions["state"] == "approved", transactions["amount"], None)
+    return transactions.groupby(["month", "country"], dropna = False).agg(
+        trans_count = ("id", "count"),
+        approved_count = ("approved", "count"),
+        trans_total_amount = ("amount", "sum"),
+        approved_total_amount = ("approved", "sum")
+    ).reset_index()
+
